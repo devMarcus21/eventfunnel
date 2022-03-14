@@ -2,25 +2,29 @@ package event
 
 import (
 	"encoding/json"
-	"fmt"
 )
 
-type Event map[string]interface{}
+type Event struct {
+	ItemKey  string
+	Schema   string
+	EventKey string
+	Data     map[string]interface{}
+}
 
 func (e Event) GetItemKey() string {
-	return fmt.Sprintf("%v", e["itemKey"])
+	return e.ItemKey
 }
 
 func (e Event) GetSchema() string {
-	return fmt.Sprintf("%v", e["schema"])
+	return e.Schema
 }
 
 func (e Event) GetEventKey() string {
-	return fmt.Sprintf("%v", e["eventKey"])
+	return e.EventKey
 }
 
-func (e Event) GetData() interface{} {
-	return e["data"]
+func (e Event) GetData() map[string]interface{} {
+	return e.Data
 }
 
 func CreateEvent(eventJson string) *Event {

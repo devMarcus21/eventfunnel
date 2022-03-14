@@ -7,7 +7,16 @@ import (
 )
 
 func TestEventCreation(t *testing.T) {
-	eventString := `{"itemKey":"item-key","schema":"schema","eventKey":"event-key","data":{"key1":"123","key2":123,"key3":false}}`
+	eventString := `{
+		"itemKey":"item-key",
+		"schema":"schema",
+		"eventKey":"event-key",
+		"data":{
+			"key1":"123",
+			"key2":123,
+			"key3":false
+		}
+	}`
 
 	event := CreateEvent(eventString)
 	eventData := make(map[string]interface{})

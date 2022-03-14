@@ -5,33 +5,26 @@ import (
 	"fmt"
 )
 
-type Event struct {
-	/*ItemKey  string
-	Schema   string
-	EventKey string
-	Data     map[string]interface{}
-	//Data string*/
-	eventData map[string]interface{}
+type Event map[string]interface{}
+
+func (e Event) GetItemKey() string {
+	return fmt.Sprintf("%v", e["itemKey"])
 }
 
-func (e *Event) GetItemKey() string {
-	return fmt.Sprintf("%v", e.eventData["itemKey"])
+func (e Event) GetSchema() string {
+	return fmt.Sprintf("%v", e["schema"])
 }
 
-func (e *Event) GetSchema() string {
-	return fmt.Sprintf("%v", e.eventData["schema"])
+func (e Event) GetEventKey() string {
+	return fmt.Sprintf("%v", e["eventKey"])
 }
 
-func (e *Event) GetEventKey() string {
-	return fmt.Sprintf("%v", e.eventData["eventKey"])
-}
-
-func (e *Event) GetData() interface{} {
-	return e.eventData["data"]
+func (e Event) GetData() interface{} {
+	return e["data"]
 }
 
 func CreateEvent(eventJson string) *Event {
-	var eventData map[string]interface{}
-	json.Unmarshal([]byte(eventJson), &eventData)
-	return &Event{eventData}
+	var event Event
+	json.Unmarshal([]byte(eventJson), &event)
+	return &event
 }

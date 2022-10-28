@@ -10,3 +10,4 @@ RUN go build -o /docker-ingress
 
 CMD [ "/docker-ingress" ]
 
+EXPOSE 80

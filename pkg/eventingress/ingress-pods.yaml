@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ingress-deployment
+  labels:
+    app: ingress
+spec:
+  replicas: 3
+  selector:
+    matchlabels:
+      app: ingress
+  template:
+    metadata:
+      labels:
+        app: ingress
+    spec:
+      containers:
+      - name: ingress
+        image: eventfunnel/ingress:vA0.1
+        ports:
+        - containerPort: 80

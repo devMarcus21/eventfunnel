@@ -2,11 +2,20 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: eventfunnel-ingress
+  annotations:
+    kubernetes.io/ingress.class: ingress-nginx
 spec:
   rules:
-  - host: eventfunnel.com
-    http:
+  - http:
       paths:
-      - backend:
+      - path: /ingress
+        pathType: Prefix
+        backend:
           serviceName: ingress-service
           servicePort: 3001
+  #- host: eventfunnel.com
+  #  http:
+  #    paths:
+  #    - backend:
+  #        serviceName: ingress-service
+  #        servicePort: 3001

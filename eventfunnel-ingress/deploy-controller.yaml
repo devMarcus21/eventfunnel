@@ -430,9 +430,9 @@ webhooks:
       - v1beta1
     clientConfig:
       service:
+        namespace: kube-system
         name: ingress-nginx-controller-admission
         path: /networking/v1beta1/ingresses
-        #namespace: ingress-nginx
 ---
 # Source: ingress-nginx/templates/admission-webhooks/job-patch/serviceaccount.yaml
 apiVersion: v1

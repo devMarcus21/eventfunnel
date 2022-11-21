@@ -579,9 +579,7 @@ spec:
     spec:
       containers:
         - name: create
-          image:
-            repository: docker.io/jettech/kube-webhook-certgen
-            tag: v1.5.1
+          image: jettech/kube-webhook-certgen:v1.5.1
           imagePullPolicy: IfNotPresent
           args:
             - create
@@ -628,9 +626,7 @@ spec:
     spec:
       containers:
         - name: patch
-          image:
-            repository: jettech/kube-webhook-certgen
-            tag: v1.5.1
+          image: jettech/kube-webhook-certgen:v1.5.1
           imagePullPolicy: IfNotPresent
           args:
             - patch

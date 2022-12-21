@@ -654,18 +654,3 @@ webhooks:
     resources:
     - ingresses
   sideEffects: None
-Footer
-© 2022 GitHub, Inc.
-Footer navigation
-Terms
-Privacy
-Security
-Status
-Docs
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
-ingress-nginx/deploy.yaml at main · kubernetes/ingress-nginx

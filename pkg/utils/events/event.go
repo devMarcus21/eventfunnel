@@ -1,4 +1,4 @@
-package event
+package events
 
 type Event struct {
 	PartitionKey string         `json:"partitionKey"`

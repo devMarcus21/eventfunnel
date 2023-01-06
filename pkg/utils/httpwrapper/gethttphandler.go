@@ -4,13 +4,13 @@ import (
 	"encoding/json"
 	"net/http"
 
-	e "github.com/devMarcus21/eventfunnel/pkg/utils/event"
+	"github.com/devMarcus21/eventfunnel/pkg/utils/events"
 	res "github.com/devMarcus21/eventfunnel/pkg/utils/responses"
 )
 
-func BuildHttpHandler(handler func(e.Event) res.ServiceResponse) func(w http.ResponseWriter, r *http.Request) {
+func BuildHttpHandler(handler func(events.Event) res.ServiceResponse) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var event e.Event
+		var event events.Event
 
 		w.Header().Set("Content-Type", "application/json")
 		err := json.NewDecoder(r.Body).Decode(&event)

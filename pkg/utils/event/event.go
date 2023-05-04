@@ -4,6 +4,7 @@ type Event struct {
 	PartitionKey string         `json:"partitionKey"`
 	Schema       string         `json:"schema"`
 	EventId      string         `json:"eventId"`
-	Time         int64          `json:"time"`
+	Timestamp    int64          `json:"timestamp"`
+	Stage        string         `json:"stage"`
 	Data         map[string]any `json:"data"`
 }

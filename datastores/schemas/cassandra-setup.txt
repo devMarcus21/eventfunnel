@@ -1,2 +1,2 @@
 CREATE KEYSPACE models with replication = {'class': 'NetworkTopologyStrategy', 'DC1-models-table-cluster': '3'};
-CREATE TABLE models (name text, stage text, scheme text, PRIMARY KEY(name, stage));
+CREATE TABLE models (name text, stage text, scheme text, PRIMARY KEY((name, stage)));

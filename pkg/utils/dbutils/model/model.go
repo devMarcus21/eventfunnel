@@ -1,4 +1,4 @@
-package models
+package model
 
 type model struct {
 	Name        string         `json:"name"`

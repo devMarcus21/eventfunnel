@@ -1,19 +1,19 @@
 package eventingress
 
 import (
-	"github.com/devMarcus21/eventfunnel/pkg/utils/dbutils/model"
+	"github.com/devMarcus21/eventfunnel/pkg/utils/dbutils/scheme"
 	e "github.com/devMarcus21/eventfunnel/pkg/utils/event"
 	res "github.com/devMarcus21/eventfunnel/pkg/utils/responses"
 )
 
-func CreateEventIngressHandler(getModelFromTable func(string, string) model.Model, schemeValidator func(e.Event, model.Model) bool) func(e.Event) res.ServiceResponse {
+func CreateEventIngressHandler(getSchemeromTable func(string, string) scheme.Scheme, schemeValidator func(e.Event, scheme.Scheme) bool) func(e.Event) res.ServiceResponse {
 	return func(event e.Event) res.ServiceResponse {
-		model := getModelFromTable(event.Model, event.Stage)
-		validateScheme := schemeValidator(event, model)
+		scheme := getSchemeromTable(event.Scheme, event.Stage)
+		validateScheme := schemeValidator(event, scheme)
 
 		return res.ServiceResponse{
 			"status":        "sucess",
-			"model":         model,
+			"scheme":        scheme,
 			"payload":       event,
 			"isValidScheme": validateScheme,
 		}

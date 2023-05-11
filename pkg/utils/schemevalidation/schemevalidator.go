@@ -3,7 +3,7 @@ package schemevalidation
 import (
 	"reflect"
 
-	"github.com/devMarcus21/eventfunnel/pkg/utils/dbutils/model"
+	"github.com/devMarcus21/eventfunnel/pkg/utils/dbutils/scheme"
 	"github.com/devMarcus21/eventfunnel/pkg/utils/event"
 )
 
@@ -35,8 +35,8 @@ func deepEqualsCompare(eventData map[string]any, schemeData map[string]any) bool
 	return true
 }
 
-func GetSchemeValidator() func(event.Event, model.Model) bool {
-	return func(event event.Event, model model.Model) bool {
-		return deepEqualsCompare(event.Data, model.Scheme)
+func GetSchemeValidator() func(event.Event, scheme.Scheme) bool {
+	return func(event event.Event, scheme scheme.Scheme) bool {
+		return deepEqualsCompare(event.Data, scheme.Data)
 	}
 }

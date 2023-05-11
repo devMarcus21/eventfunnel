@@ -2,7 +2,7 @@ package event
 
 type Event struct {
 	PartitionKey string         `json:"partitionKey"`
-	Model        string         `json:"model"`
+	Scheme       string         `json:"scheme"`
 	EventId      string         `json:"eventId"`
 	Timestamp    int            `json:"timestamp"`
 	Stage        string         `json:"stage"`

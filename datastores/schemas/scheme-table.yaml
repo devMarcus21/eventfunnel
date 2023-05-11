@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: models-table
+  name: scheme-table
   labels:
-    app: models-table
+    app: scheme-table
 spec:
-  serviceName: models-table-service
+  serviceName: scheme-table-service
   replicas: 3
   selector:
     matchLabels:
-      app: models-table
+      app: scheme-table
   template:
     metadata:
       labels:
-        app: models-table
+        app: scheme-table
     spec:
       terminationGracePeriodSeconds: 1800
       containers:
-      - name: models-table
+      - name: scheme-table
         image: gcr.io/google-samples/cassandra:v13
         imagePullPolicy: Always
         ports:
@@ -53,13 +53,13 @@ spec:
           - name: HEAP_NEWSIZE
             value: 100M
           - name: CASSANDRA_SEEDS
-            value: "models-table-0.models-table-service.default.svc.cluster.local"
+            value: "scheme-table-0.scheme-table-service.default.svc.cluster.local"
           - name: CASSANDRA_CLUSTER_NAME
-            value: "models-table-cluster"
+            value: "scheme-table-cluster"
           - name: CASSANDRA_DC
-            value: "DC1-models-table-cluster"
+            value: "DC1-scheme-table-cluster"
           - name: CASSANDRA_RACK
-            value: "Rack1-models-table-cluster"
+            value: "Rack1-scheme-table-cluster"
           - name: POD_IP
             valueFrom:
               fieldRef:

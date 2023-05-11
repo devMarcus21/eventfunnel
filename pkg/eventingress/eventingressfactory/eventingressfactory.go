@@ -6,14 +6,16 @@ import (
 	res "github.com/devMarcus21/eventfunnel/pkg/utils/responses"
 )
 
-func CreateEventIngressHandler(modelTable func(string, string) model.Model) func(e.Event) res.ServiceResponse {
+func CreateEventIngressHandler(getModelFromTable func(string, string) model.Model, schemeValidator func(e.Event, model.Model) bool) func(e.Event) res.ServiceResponse {
 	return func(event e.Event) res.ServiceResponse {
-		model := modelTable(event.Model, event.Stage)
+		model := getModelFromTable(event.Model, event.Stage)
+		validateScheme := schemeValidator(event, model)
 
 		return res.ServiceResponse{
-			"status":  "sucess",
-			"model":   model,
-			"payload": event,
+			"status":        "sucess",
+			"model":         model,
+			"payload":       event,
+			"isValidScheme": validateScheme,
 		}
 	}
 }

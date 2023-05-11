@@ -2,6 +2,7 @@ package scheme
 
 import (
 	"encoding/json"
+	"errors"
 )
 
 func deserializeMapToScheme(scheme map[string]any) Scheme {
@@ -18,18 +19,17 @@ func deserializeMapToScheme(scheme map[string]any) Scheme {
 	}
 }
 
-func CreateSchemeTable(cassandra func(params ...interface{}) []map[string]any) func(string, string) Scheme {
-	return func(modeName string, stage string) Scheme {
+func CreateSchemeTable(cassandra func(params ...interface{}) []map[string]any) func(string, string) (Scheme, error) {
+	return func(modeName string, stage string) (Scheme, error) {
 		queryResults := cassandra(modeName, stage)
 
 		// if query results is empty, no schema was found for the given stage and schema
 		if len(queryResults) == 0 {
-			// TODO fix this case
-			return Scheme{}
+			return Scheme{}, errors.New("Scheme not found in scheme table")
 		}
 
 		// Only interested in first instance in array
 		// There should not be more than one scheme for scheme name + stage
-		return deserializeMapToScheme(queryResults[0])
+		return deserializeMapToScheme(queryResults[0]), nil
 	}
 }

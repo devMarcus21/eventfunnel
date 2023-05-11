@@ -37,6 +37,7 @@ func deepEqualsCompare(eventData map[string]any, schemeData map[string]any) bool
 
 func GetSchemeValidator() func(event.Event, scheme.Scheme) bool {
 	return func(event event.Event, scheme scheme.Scheme) bool {
+		// TODO validation will return true for event that has extra fields. Determine if this is appropriate
 		return deepEqualsCompare(event.Data, scheme.Data)
 	}
 }

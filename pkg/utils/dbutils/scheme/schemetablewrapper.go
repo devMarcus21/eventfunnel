@@ -4,7 +4,7 @@ import (
 	"github.com/devMarcus21/eventfunnel/pkg/utils/dbutils/cassandrawrapper"
 )
 
-func GetSchemeTable() func(string, string) Scheme {
+func GetSchemeTable() func(string, string) (Scheme, error) {
 	// TODO look at making this dynamic and use env variables
 	nodes := [3]string{
 		"scheme-table-0.scheme-table-service.default.svc.cluster.local",

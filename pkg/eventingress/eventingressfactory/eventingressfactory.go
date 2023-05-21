@@ -2,13 +2,18 @@ package eventingress
 
 import (
 	"github.com/devMarcus21/eventfunnel/pkg/utils/dbutils/scheme"
-	e "github.com/devMarcus21/eventfunnel/pkg/utils/event"
+	"github.com/devMarcus21/eventfunnel/pkg/utils/event"
 	res "github.com/devMarcus21/eventfunnel/pkg/utils/responses"
 )
 
-func CreateEventIngressHandler(getSchemeromTable func(string, string) (scheme.Scheme, error), schemeValidator func(e.Event, scheme.Scheme) bool) func(e.Event) res.ServiceResponse {
-	return func(event e.Event) res.ServiceResponse {
-		scheme, err := getSchemeromTable(event.Scheme, event.Stage)
+func CreateEventIngressHandler(
+	getSchemeFromTable func(string, string) (scheme.Scheme, error),
+	schemeValidator func(event.Event, scheme.Scheme) bool,
+	queuePublisher func(event.Event) bool,
+) func(event.Event) res.ServiceResponse {
+
+	return func(event event.Event) res.ServiceResponse {
+		scheme, err := getSchemeFromTable(event.Scheme, event.Stage)
 		if err != nil {
 			return res.ServiceResponse{
 				"status":  "failed",
@@ -16,13 +21,30 @@ func CreateEventIngressHandler(getSchemeromTable func(string, string) (scheme.Sc
 				"message": err.Error(),
 			}
 		}
-		validateScheme := schemeValidator(event, scheme)
+		validScheme := schemeValidator(event, scheme)
+
+		if !validScheme {
+			return res.ServiceResponse{
+				"status":  "failed",
+				"payload": event,
+				"message": "Scheme is invalid or doesn't exist",
+			}
+		}
+
+		if !queuePublisher(event) {
+			return res.ServiceResponse{
+				"status":  "failed",
+				"payload": event,
+				"message": "event failed to publish to ingress queue",
+			}
+		}
 
 		return res.ServiceResponse{
-			"status":        "sucess",
-			"scheme":        scheme,
-			"payload":       event,
-			"isValidScheme": validateScheme,
+			"status":           "sucess",
+			"scheme":           scheme,
+			"payload":          event,
+			"isValidScheme":    true,
+			"payloadPublished": true,
 		}
 	}
 }

@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ingress-queue
+  labels:
+    app: ingress-queue
+spec:
+  serviceName: ingress-queue-headless-service
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ingress-queue
+  template:
+    metadata:
+      labels:
+        app: ingress-queue
+    spec:
+      containers:
+      - name: ingress-queue
+        image: rabbitmq:3.12-rc-management
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5672
+        - containerPort: 15672

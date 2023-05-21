@@ -15,6 +15,7 @@ func main() {
 	schemeTable := scheme.GetSchemeTable()
 	schemevalidatior := schemevalidation.GetSchemeValidator()
 
+	// TODO create a user with yaml config
 	queuePublisher := queue.GetQueuePublisherWrapper("amqp://guest:guest@ingress-queue-service:5672/", "ingress-queue")
 
 	http.HandleFunc("/ingress", httpwrapper.BuildHttpHandler(ingressfactory.CreateEventIngressHandler(schemeTable, schemevalidatior, queuePublisher)))

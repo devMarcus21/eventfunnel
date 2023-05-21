@@ -16,8 +16,6 @@ spec:
     spec:
       containers:
       - name: ingress
-        #image: eventfunnel/ingress:vA0.1
-        image: event/ingress:latest
-        imagePullPolicy: Never
+        image: eventfunnel/ingress:vA0.1
         ports:
         - containerPort: 80

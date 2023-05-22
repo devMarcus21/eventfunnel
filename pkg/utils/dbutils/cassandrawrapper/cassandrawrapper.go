@@ -9,7 +9,7 @@ func CreateCassandraQueryHandler(config ParamConfig) func(...interface{}) []map[
 		session, _ := cluster.CreateSession()
 		defer session.Close()
 
-		// TODO add a log or error if for some reason the scheme table does not exist
+		// TODO add a log or error if for some reason the table or keyspace does not exist
 		iter := session.Query(config.Query, params...).Iter()
 
 		// TODO look at mapScan for large pages of query results

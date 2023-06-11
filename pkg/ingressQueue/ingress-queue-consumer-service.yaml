@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: ingress-queue-consumer-service
+  name: ingress-queue-consumer-service
+spec:
+  clusterIP: None
+  ports:
+  - port: 4569
+  selector:
+    app: ingress-queue-consumer

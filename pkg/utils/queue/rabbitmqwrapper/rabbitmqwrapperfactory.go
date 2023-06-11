@@ -26,6 +26,7 @@ func GetRabbitmqPublisherWrapper(queueServiceConnection string, queueName string
 			return false
 		}
 		defer ch.Close()
+		// TODO look at adding Qos control github.com/rabbitmq/amqp091-go/blob/main/channel.go
 
 		q, qErr := ch.QueueDeclare(
 			queueName, // name

@@ -52,7 +52,7 @@ func GetRabbitmqConsumerWrapper(queueServiceConnection string, queueName string)
 			numberOfMessagesInChannel := len(msgs) // number of messages currently in the rabbitmq channel
 
 			for i := 0; i < numberOfMessagesInChannel && i < 10; i++ {
-				select {
+				/*select {
 				case msg, ok := <-msgs:
 					if ok {
 						event, err := event.ConvertByteArrayToEvent(msg.Body)
@@ -67,14 +67,32 @@ func GetRabbitmqConsumerWrapper(queueServiceConnection string, queueName string)
 							continue
 						}
 					} else {
+						fmt.Println("NOT OK")
 						break // channel is closed
 					}
 				default:
+					fmt.Println("default break")
 					break // no value in channel
+				}*/
+				msg := <-msgs
+				event, err := event.ConvertByteArrayToEvent(msg.Body)
+				if err != nil {
+					// TODO log marshalling error
+					fmt.Println("FAILED CONVERSION")
+					continue
+				}
+				events = append(events, event)
+				messageAckError := msg.Ack(false)
+				if messageAckError != nil {
+					// TODO dead code, just reminder to later log this error
+					fmt.Println("FALIED ACK")
+					continue
 				}
 			}
 
-			fmt.Println(events)
+			if len(events) > 0 {
+				fmt.Println(events)
+			}
 		}
 	}
 }

@@ -1,11 +1,10 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: ingress-queue
   labels:
     app: ingress-queue
 spec:
-  serviceName: ingress-queue-headless-service
   replicas: 2
   selector:
     matchLabels:

@@ -22,7 +22,7 @@ spec:
         - containerPort: 5672
         - containerPort: 15672
       - name: ingress-queue-consumer
-        image: ingress-queue-consumer:latest
+        image: ingress-queue-consumer-im:latest
         # imagePullPolicy: Always
         imagePullPolicy: Never
         ports:

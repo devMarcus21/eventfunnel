@@ -4,38 +4,24 @@ import (
 	"fmt"
 
 	"github.com/devMarcus21/eventfunnel/pkg/utils/event"
-	amqp "github.com/rabbitmq/amqp091-go"
 )
 
-func GetRabbitmqConsumerWrapper(queueServiceConnection string, queueName string) func() error {
+func GetRabbitmqConsumerWrapper(
+	queueServiceConnection string,
+	queueName string,
+	createRabbitmqConnection func(queueServiceConnectionString string, queueName string) (RabbitmqConnections, error),
+) func() error {
 	return func() error {
-		conn, connectionErr := amqp.Dial(queueServiceConnection)
-		if connectionErr != nil {
-			return connectionErr
+		rabbitmqConnection, err := createRabbitmqConnection(queueServiceConnection, queueName)
+		if err != nil {
+			return err
 		}
-		defer conn.Close()
-
-		ch, channelErr := conn.Channel()
-		if channelErr != nil {
-			return channelErr
-		}
-		defer ch.Close()
-
-		q, qErr := ch.QueueDeclare(
-			queueName, // name
-			false,     // durable
-			false,     // delete when unused
-			false,     // exclusive
-			false,     // no-wait
-			nil,       // arguments
-		)
-		if qErr != nil {
-			return qErr
-		}
+		defer rabbitmqConnection.amqpConnection.Close()
+		defer rabbitmqConnection.amqpChannel.Close()
 
 		// consume
-		msgs, consumeError := ch.Consume(
-			q.Name,
+		msgs, consumeError := rabbitmqConnection.amqpChannel.Consume(
+			rabbitmqConnection.queue.Name,
 			"",
 			false,
 			false,

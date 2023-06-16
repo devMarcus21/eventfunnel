@@ -12,23 +12,21 @@ import (
 
 // TODO make this more modular
 // TODO look at connection pooling
-func GetRabbitmqPublisherWrapper(queueServiceConnection string, queueName string) func(event.Event) bool {
+func GetRabbitmqPublisherWrapper(
+	queueServiceConnection string,
+	queueName string,
+	createRabbitmqConnection func(queueServiceConnectionString string, queueName string) (RabbitmqConnections, error),
+) func(event.Event) bool {
 	// TODO log error if it exists/retry
 	return func(event event.Event) bool {
-		conn, connectionErr := amqp.Dial(queueServiceConnection)
-		if connectionErr != nil {
+		rabbitmqConnection, err := createRabbitmqConnection(queueServiceConnection, queueName)
+		if err != nil {
 			return false
 		}
-		defer conn.Close()
+		defer rabbitmqConnection.amqpConnection.Close()
+		defer rabbitmqConnection.amqpChannel.Close()
 
-		ch, channelErr := conn.Channel()
-		if channelErr != nil {
-			return false
-		}
-		defer ch.Close()
-		// TODO look at adding Qos control github.com/rabbitmq/amqp091-go/blob/main/channel.go
-
-		q, qErr := ch.QueueDeclare(
+		q, qErr := rabbitmqConnection.amqpChannel.QueueDeclare(
 			queueName, // name
 			false,     // durable
 			false,     // delete when unused
@@ -46,7 +44,7 @@ func GetRabbitmqPublisherWrapper(queueServiceConnection string, queueName string
 		if encodeErr != nil {
 			return false
 		}
-		publishErr := ch.PublishWithContext(ctx,
+		publishErr := rabbitmqConnection.amqpChannel.PublishWithContext(ctx,
 			"",     // exchange
 			q.Name, // routing key
 			false,  // mandatory

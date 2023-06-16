@@ -9,7 +9,7 @@ import (
 func CreateEventIngressHandler(
 	getSchemeFromTable func(string, string) (scheme.Scheme, error),
 	schemeValidator func(event.Event, scheme.Scheme) bool,
-	queuePublisher func(event.Event) bool,
+	queuePublisher func(event.Event) (bool, error),
 ) func(event.Event) res.ServiceResponse {
 
 	return func(event event.Event) res.ServiceResponse {
@@ -31,7 +31,9 @@ func CreateEventIngressHandler(
 			}
 		}
 
-		if !queuePublisher(event) {
+		publishingResult, _ := queuePublisher(event)
+
+		if !publishingResult {
 			return res.ServiceResponse{
 				"status":  "failed",
 				"payload": event,

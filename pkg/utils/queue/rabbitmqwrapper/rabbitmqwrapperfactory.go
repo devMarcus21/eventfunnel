@@ -16,47 +16,36 @@ func GetRabbitmqPublisherWrapper(
 	queueServiceConnection string,
 	queueName string,
 	createRabbitmqConnection func(queueServiceConnectionString string, queueName string) (RabbitmqConnections, error),
-) func(event.Event) bool {
+) func(event.Event) (bool, error) {
 	// TODO log error if it exists/retry
-	return func(event event.Event) bool {
+	return func(event event.Event) (bool, error) {
 		rabbitmqConnection, err := createRabbitmqConnection(queueServiceConnection, queueName)
 		if err != nil {
-			return false
+			return false, err
 		}
 		defer rabbitmqConnection.amqpConnection.Close()
 		defer rabbitmqConnection.amqpChannel.Close()
 
-		q, qErr := rabbitmqConnection.amqpChannel.QueueDeclare(
-			queueName, // name
-			false,     // durable
-			false,     // delete when unused
-			false,     // exclusive
-			false,     // no-wait
-			nil,       // arguments
-		)
-		if qErr != nil {
-			return false
-		}
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
 
 		eventEncoded, encodeErr := json.Marshal(event)
 		if encodeErr != nil {
-			return false
+			return false, encodeErr
 		}
 		publishErr := rabbitmqConnection.amqpChannel.PublishWithContext(ctx,
-			"",     // exchange
-			q.Name, // routing key
-			false,  // mandatory
-			false,  // immediate
+			"",                            // exchange
+			rabbitmqConnection.queue.Name, // routing key
+			false,                         // mandatory
+			false,                         // immediate
 			amqp.Publishing{
 				ContentType: "application/json",
 				Body:        eventEncoded,
 			})
 		if publishErr != nil {
-			return false
+			return false, publishErr
 		}
 
-		return true
+		return true, nil
 	}
 }

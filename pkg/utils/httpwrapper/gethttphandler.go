@@ -25,3 +25,21 @@ func BuildHttpHandler(handler func(e.Event) res.ServiceResponse) func(w http.Res
 		json.NewEncoder(w).Encode(response)
 	}
 }
+
+func BuildHttpHandlerBatch(handler func([]e.Event) res.ServiceResponse) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var eventBatch []e.Event
+
+		w.Header().Set("Content-Type", "application/json")
+		err := json.NewDecoder(r.Body).Decode(&eventBatch)
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		response := handler(eventBatch)
+
+		json.NewEncoder(w).Encode(response)
+	}
+}

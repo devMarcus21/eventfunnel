@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: subscription-fanout-deployment
+  labels:
+    app: subscription-fanout
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: subscription-fanout
+  template:
+    metadata:
+      labels:
+        app: subscription-fanout
+    spec:
+      containers:
+      - name: subscription-fanout
+        image: eventfunnel/subscriptionfanout:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 80

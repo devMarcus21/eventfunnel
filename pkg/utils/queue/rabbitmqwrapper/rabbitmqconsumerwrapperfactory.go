@@ -1,15 +1,18 @@
 package rabbitmqwrapper
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/devMarcus21/eventfunnel/pkg/utils/event"
+	"github.com/devMarcus21/eventfunnel/pkg/utils/responses"
 )
 
 func GetRabbitmqConsumerWrapper(
 	queueServiceConnection string,
 	queueName string,
 	createRabbitmqConnection func(queueServiceConnectionString string, queueName string) (RabbitmqConnections, error),
+	httpSenderHandler func([]byte) (responses.HttpResponse, error),
 ) func() error {
 	return func() error {
 		rabbitmqConnection, err := createRabbitmqConnection(queueServiceConnection, queueName)
@@ -61,7 +64,17 @@ func GetRabbitmqConsumerWrapper(
 			}
 
 			if len(events) > 0 {
-				fmt.Println(events)
+				eventsEncoded, _ := json.Marshal(events)
+
+				// TODO handle response and any errors. Add logs too
+				response, err := httpSenderHandler(eventsEncoded)
+				fmt.Println(response.ResultCode)
+
+				var resultBody map[string]any
+				marshalErr := json.Unmarshal(response.BodyResult, &resultBody)
+				fmt.Println(resultBody)
+				fmt.Println(marshalErr)
+				fmt.Println(err)
 			}
 		}
 	}

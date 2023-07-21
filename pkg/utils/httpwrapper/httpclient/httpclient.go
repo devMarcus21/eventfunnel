@@ -9,7 +9,7 @@ import (
 
 type HttpClientWrapper struct{}
 
-func (*HttpClientWrapper) Send(request *http.Request) (responses.HttpResponse, error) {
+func (HttpClientWrapper) Send(request *http.Request) (responses.HttpResponse, error) {
 	// send the request
 	client := &http.Client{}
 	response, sendRequestError := client.Do(request)

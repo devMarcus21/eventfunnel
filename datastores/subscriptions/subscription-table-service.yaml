@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: subscription-table-service
+  name: subscription-table-service
+spec:
+  clusterIP: None
+  ports:
+  - port: 9042
+  selector:
+    app:  subscription-table

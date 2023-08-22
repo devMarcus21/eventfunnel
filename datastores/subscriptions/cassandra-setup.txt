@@ -1,0 +1,2 @@
+CREATE KEYSPACE subscriptions with replication = {'class': 'NetworkTopologyStrategy', 'DC1-subscription-table-cluster': '3'};
+CREATE TABLE subscriptions (schemeName text, stage text, subscriber text, authType text, authString text, PRIMARY KEY((schemeName, stage), subscriber));
